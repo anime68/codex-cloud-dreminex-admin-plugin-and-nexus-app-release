@@ -41,7 +41,7 @@ jobs:
           tag="v${{ steps.release.outputs.version }}"
           dir="${{ steps.release.outputs.dir }}"
           if gh release view "$tag" >/dev/null 2>&1; then
-            echo "Release $tag already exists; immutable assets were not overwritten."
+            gh release upload "$tag" --clobber "$dir"/*.apk "$dir/SHA256SUMS.txt"
           else
             gh release create "$tag" --target "$GITHUB_SHA" --title "Dreminex Nexus $tag" --notes-file "$dir/RELEASE_NOTES.md" "$dir"/*.apk "$dir/SHA256SUMS.txt"
           fi

@@ -3,8 +3,12 @@
   "android": {
     "version": "0.9.0",
     "download_url": "https://github.com/anime68/dreminex-nexus-release-/releases/download/v0.9.0/Dreminex_Nexus_v0.9.0_signed.apk",
-    "sha256": "32e101cd130754f43510ea3de79128c1e508f18af0b0209175977166f2b7814e"
+    "sha256": "ca211dd8efc379d702e66a349a5fd6d00d787047efa5eeb044659899b07e141c"
   },
-  "windows": { "version": "", "download_url": "", "sha256": "" },
+  "windows": {
+    "version": "",
+    "download_url": "",
+    "sha256": ""
+  },
   "release_notes_url": "https://github.com/anime68/dreminex-nexus-release-/releases/tag/v0.9.0"
 }
