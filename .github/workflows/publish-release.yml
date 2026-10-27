@@ -1,0 +1,58 @@
+name: Publish verified Nexus update
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'release-input/**'
+      - 'latest.json'
+      - '.github/workflows/publish-release.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate manifest and signed package input
+        id: release
+        run: |
+          set -euo pipefail
+          version=$(python3 -c 'import json; print(json.load(open("latest.json"))["android"]["version"])')
+          test -n "$version"
+          dir="release-input/v$version"
+          test -d "$dir"
+          (cd "$dir" && sha256sum --check SHA256SUMS.txt)
+          apk=$(find "$dir" -maxdepth 1 -type f -name '*.apk' -print -quit)
+          test -n "$apk"
+          expected=$(python3 -c 'import json; print(json.load(open("latest.json"))["android"]["sha256"])')
+          actual=$(sha256sum "$apk" | cut -d' ' -f1)
+          test "$actual" = "$expected"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "dir=$dir" >> "$GITHUB_OUTPUT"
+      - name: Publish immutable GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag="v${{ steps.release.outputs.version }}"
+          dir="${{ steps.release.outputs.dir }}"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "Release $tag already exists; immutable assets were not overwritten."
+          else
+            gh release create "$tag" --target "$GITHUB_SHA" --title "Dreminex Nexus $tag" --notes-file "$dir/RELEASE_NOTES.md" "$dir"/*.apk "$dir/SHA256SUMS.txt"
+          fi
+      - name: Validate public manifest URLs
+        run: |
+          python3 - <<'PY'
+          import json, urllib.request
+          data=json.load(open('latest.json'))
+          for key in ('download_url','sha256'):
+              assert data['android'][key]
+          with urllib.request.urlopen(data['android']['download_url'], timeout=30) as response:
+              assert response.status == 200
+          print('Public update channel: PASS')
+          PY
