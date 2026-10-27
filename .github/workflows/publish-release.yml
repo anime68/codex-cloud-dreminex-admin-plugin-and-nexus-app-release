@@ -1,58 +1,42 @@
-name: Publish verified Nexus update
-
+name: Publish verified Dreminex updates
 on:
   push:
     branches: [main]
-    paths:
-      - 'release-input/**'
-      - 'latest.json'
-      - '.github/workflows/publish-release.yml'
+    paths: ['release-input/**','latest.json','.github/workflows/publish-release.yml']
   workflow_dispatch:
-
 permissions:
   contents: write
-
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validate manifest and signed package input
+      - name: Validate combined manifest and assets
         id: release
         run: |
           set -euo pipefail
-          version=$(python3 -c 'import json; print(json.load(open("latest.json"))["android"]["version"])')
-          test -n "$version"
-          dir="release-input/v$version"
-          test -d "$dir"
-          (cd "$dir" && sha256sum --check SHA256SUMS.txt)
-          apk=$(find "$dir" -maxdepth 1 -type f -name '*.apk' -print -quit)
-          test -n "$apk"
-          expected=$(python3 -c 'import json; print(json.load(open("latest.json"))["android"]["sha256"])')
-          actual=$(sha256sum "$apk" | cut -d' ' -f1)
-          test "$actual" = "$expected"
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-          echo "dir=$dir" >> "$GITHUB_OUTPUT"
-      - name: Publish immutable GitHub release
-        env:
-          GH_TOKEN: ${{ github.token }}
+          tag=$(python3 -c 'import json; d=json.load(open("latest.json")); print("dreminex-suite-v%s-nexus-v%s"%(d["plugin"]["version"],d["android"]["version"]))')
+          dir="release-input/$tag"; test -d "$dir"; (cd "$dir" && sha256sum --check SHA256SUMS.txt)
+          python3 - "$dir" <<'PY'
+          import hashlib,json,pathlib,sys
+          d=json.load(open('latest.json')); root=pathlib.Path(sys.argv[1])
+          for key,suffix in [('plugin','.zip'),('android','.apk')]:
+              files=list(root.glob('*'+suffix)); assert len(files)==1
+              assert hashlib.sha256(files[0].read_bytes()).hexdigest()==d[key]['sha256']
+          PY
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"; echo "dir=$dir" >> "$GITHUB_OUTPUT"
+      - name: Publish immutable combined release
+        env: { GH_TOKEN: "${{ github.token }}" }
         run: |
           set -euo pipefail
-          tag="v${{ steps.release.outputs.version }}"
-          dir="${{ steps.release.outputs.dir }}"
-          if gh release view "$tag" >/dev/null 2>&1; then
-            echo "Release $tag already exists; immutable assets were not overwritten."
-          else
-            gh release create "$tag" --target "$GITHUB_SHA" --title "Dreminex Nexus $tag" --notes-file "$dir/RELEASE_NOTES.md" "$dir"/*.apk "$dir/SHA256SUMS.txt"
-          fi
-      - name: Validate public manifest URLs
+          tag="${{ steps.release.outputs.tag }}"; dir="${{ steps.release.outputs.dir }}"
+          if gh release view "$tag" >/dev/null 2>&1; then echo "Release already exists; assets remain immutable."; else gh release create "$tag" --target "$GITHUB_SHA" --title "Dreminex Suite 1.22.1 · Nexus 0.9.1" --notes-file "$dir/RELEASE_NOTES.md" "$dir"/*.zip "$dir"/*.apk "$dir/SHA256SUMS.txt"; fi
+      - name: Validate public URLs
         run: |
           python3 - <<'PY'
-          import json, urllib.request
-          data=json.load(open('latest.json'))
-          for key in ('download_url','sha256'):
-              assert data['android'][key]
-          with urllib.request.urlopen(data['android']['download_url'], timeout=30) as response:
-              assert response.status == 200
-          print('Public update channel: PASS')
+          import json,urllib.request
+          d=json.load(open('latest.json'))
+          for key in ('plugin','android'):
+              with urllib.request.urlopen(d[key]['download_url'],timeout=30) as r: assert r.status==200
+          print('Combined public update channel: PASS')
           PY
