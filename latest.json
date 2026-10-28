@@ -1,16 +1,20 @@
 {
   "schema_version": 2,
   "plugin": {
-    "version": "1.22.1",
-    "download_url": "https://github.com/anime68/codex-cloud-dreminex-admin-plugin-and-nexus-app-release/releases/download/dreminex-suite-v1.22.1-nexus-v0.9.1/Dreminex_Suite_v1.22.1.zip",
-    "sha256": "91f6c6bb29be1e7d83638944af3f4e282a704d6be5614f06d0c2610c668ea417",
-    "release_notes_url": "https://github.com/anime68/codex-cloud-dreminex-admin-plugin-and-nexus-app-release/releases/tag/dreminex-suite-v1.22.1-nexus-v0.9.1"
+    "version": "1.22.2",
+    "download_url": "https://github.com/anime68/codex-cloud-dreminex-admin-plugin-and-nexus-app-release/releases/download/dreminex-suite-v1.22.2-nexus-v0.9.2/Dreminex_Suite_v1.22.2.zip",
+    "sha256": "322ea38480f861ad35fd737977fbb46cdf029e13f1433b2b5b6a2dbd88210f08",
+    "release_notes_url": "https://github.com/anime68/codex-cloud-dreminex-admin-plugin-and-nexus-app-release/releases/tag/dreminex-suite-v1.22.2-nexus-v0.9.2"
   },
   "android": {
-    "version": "0.9.1",
-    "download_url": "https://github.com/anime68/codex-cloud-dreminex-admin-plugin-and-nexus-app-release/releases/download/dreminex-suite-v1.22.1-nexus-v0.9.1/Dreminex_Nexus_v0.9.1_signed.apk",
-    "sha256": "7ab75ad833e6490cb0d55aba164503bf522541cb62d1808f50b560ace5b944e7"
+    "version": "0.9.2",
+    "download_url": "https://github.com/anime68/codex-cloud-dreminex-admin-plugin-and-nexus-app-release/releases/download/dreminex-suite-v1.22.2-nexus-v0.9.2/Dreminex_Nexus_v0.9.2_signed.apk",
+    "sha256": "b64d2d8e3ecf16ba04dfea293451e63b4108d4c94a00ae93adbfa115c455ee87"
   },
-  "windows": { "version": "", "download_url": "", "sha256": "" },
-  "release_notes_url": "https://github.com/anime68/codex-cloud-dreminex-admin-plugin-and-nexus-app-release/releases/tag/dreminex-suite-v1.22.1-nexus-v0.9.1"
+  "windows": {
+    "version": "",
+    "download_url": "",
+    "sha256": ""
+  },
+  "release_notes_url": "https://github.com/anime68/codex-cloud-dreminex-admin-plugin-and-nexus-app-release/releases/tag/dreminex-suite-v1.22.2-nexus-v0.9.2"
 }

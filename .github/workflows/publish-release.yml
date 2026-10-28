@@ -30,7 +30,9 @@ jobs:
         run: |
           set -euo pipefail
           tag="${{ steps.release.outputs.tag }}"; dir="${{ steps.release.outputs.dir }}"
-          if gh release view "$tag" >/dev/null 2>&1; then echo "Release already exists; assets remain immutable."; else gh release create "$tag" --target "$GITHUB_SHA" --title "Dreminex Suite 1.22.1 · Nexus 0.9.1" --notes-file "$dir/RELEASE_NOTES.md" "$dir"/*.zip "$dir"/*.apk "$dir/SHA256SUMS.txt"; fi
+          plugin_version=$(python3 -c 'import json; print(json.load(open("latest.json"))["plugin"]["version"])')
+          android_version=$(python3 -c 'import json; print(json.load(open("latest.json"))["android"]["version"])')
+          if gh release view "$tag" >/dev/null 2>&1; then echo "Release already exists; assets remain immutable."; else gh release create "$tag" --target "$GITHUB_SHA" --title "Dreminex Suite $plugin_version · Nexus $android_version" --notes-file "$dir/RELEASE_NOTES.md" "$dir"/*.zip "$dir"/*.apk "$dir/SHA256SUMS.txt"; fi
       - name: Validate public URLs
         run: |
           python3 - <<'PY'
