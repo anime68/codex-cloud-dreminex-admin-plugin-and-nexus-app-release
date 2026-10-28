@@ -14,10 +14,6 @@ Keystores, passwords, source code, OAuth credentials, recovery archives and inte
 
 ## Publishing a future update
 
-1. Build the APK in the private source repository with the permanent Nexus key.
-2. Verify package `com.dreminex.nexus`, a higher `versionCode`, and certificate SHA-256 from `CERTIFICATE_SHA256.txt`.
-3. Create `release-input/vX.Y.Z/` containing the APK, `SHA256SUMS.txt`, and `RELEASE_NOTES.md`.
-4. Update `latest.json` with the exact version, public release URL and APK SHA-256.
-5. Push these files to `main`. The publish workflow verifies the checksum, publishes the GitHub Release, and validates `latest.json`.
+Follow [DREMINEX_UPDATE_RELEASE_RUNBOOK_BN.md](DREMINEX_UPDATE_RELEASE_RUNBOOK_BN.md). It contains the exact combined plugin/app folder layout, verification commands, manifest template, failure recovery and final checklist.
 
 Never overwrite a released APK with different bytes. Publish a higher version instead.

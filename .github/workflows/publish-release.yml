@@ -18,11 +18,20 @@ jobs:
           tag=$(python3 -c 'import json; d=json.load(open("latest.json")); print("dreminex-suite-v%s-nexus-v%s"%(d["plugin"]["version"],d["android"]["version"]))')
           dir="release-input/$tag"; test -d "$dir"; (cd "$dir" && sha256sum --check SHA256SUMS.txt)
           python3 - "$dir" <<'PY'
-          import hashlib,json,pathlib,sys
+          import hashlib,json,pathlib,re,sys,zipfile
           d=json.load(open('latest.json')); root=pathlib.Path(sys.argv[1])
-          for key,suffix in [('plugin','.zip'),('android','.apk')]:
-              files=list(root.glob('*'+suffix)); assert len(files)==1
-              assert hashlib.sha256(files[0].read_bytes()).hexdigest()==d[key]['sha256']
+          plugin_version=d['plugin']['version']; android_version=d['android']['version']
+          expected={'plugin':root/f'Dreminex_Suite_v{plugin_version}.zip','android':root/f'Dreminex_Nexus_v{android_version}_signed.apk'}
+          assert sorted(p.name for p in root.iterdir()) == sorted([expected['plugin'].name,expected['android'].name,'RELEASE_NOTES.md','SHA256SUMS.txt'])
+          prefix='https://github.com/anime68/codex-cloud-dreminex-admin-plugin-and-nexus-app-release/releases/download/'
+          for key,path in expected.items():
+              assert path.is_file() and hashlib.sha256(path.read_bytes()).hexdigest()==d[key]['sha256']
+              assert d[key]['download_url'].startswith(prefix) and d[key]['download_url'].endswith('/'+path.name)
+          with zipfile.ZipFile(expected['plugin']) as archive:
+              names=archive.namelist(); assert names and all(name.startswith('dreminex-suite/') for name in names)
+              main=archive.read('dreminex-suite/dreminex-suite.php').decode('utf-8')
+              assert re.search(r'Version:\s*'+re.escape(plugin_version)+r'\b',main)
+              assert re.search(r"define\(\s*['\"]DREMINEX_SUITE_VERSION['\"]\s*,\s*['\"]"+re.escape(plugin_version)+r"['\"]",main)
           PY
           echo "tag=$tag" >> "$GITHUB_OUTPUT"; echo "dir=$dir" >> "$GITHUB_OUTPUT"
       - name: Publish immutable combined release
@@ -36,9 +45,11 @@ jobs:
       - name: Validate public URLs
         run: |
           python3 - <<'PY'
-          import json,urllib.request
+          import hashlib,json,urllib.request
           d=json.load(open('latest.json'))
           for key in ('plugin','android'):
-              with urllib.request.urlopen(d[key]['download_url'],timeout=30) as r: assert r.status==200
+              with urllib.request.urlopen(d[key]['download_url'],timeout=60) as r:
+                  assert r.status==200
+                  assert hashlib.sha256(r.read()).hexdigest()==d[key]['sha256']
           print('Combined public update channel: PASS')
           PY
