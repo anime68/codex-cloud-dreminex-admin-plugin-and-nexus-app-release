@@ -1,0 +1,2 @@
+0baaa243db30ba3392af4febadc9274fcc7e3809cda1c701a4de865385396d53  Dreminex_Suite_v1.22.8.zip
+ac99e5bb7790771991463115312e6fe7a8fa2aa4fc4dea584d514c114bae15ee  Dreminex_Nexus_v0.9.4_signed.apk
