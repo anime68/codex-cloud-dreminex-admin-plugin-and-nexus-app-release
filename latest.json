@@ -1,20 +1,20 @@
 {
   "schema_version": 2,
   "plugin": {
-    "version": "1.22.14",
-    "download_url": "https://github.com/anime68/codex-cloud-dreminex-admin-plugin-and-nexus-app-release/releases/download/dreminex-suite-v1.22.14-nexus-v0.9.6/Dreminex_Suite_v1.22.14.zip",
-    "sha256": "7c73ae0ea0d9b09fdc81263143f5239fd77237d1f59253556ffe3ff284c79ef4",
-    "release_notes_url": "https://github.com/anime68/codex-cloud-dreminex-admin-plugin-and-nexus-app-release/releases/tag/dreminex-suite-v1.22.14-nexus-v0.9.6"
+    "version": "1.22.15",
+    "download_url": "https://github.com/anime68/codex-cloud-dreminex-admin-plugin-and-nexus-app-release/releases/download/dreminex-suite-v1.22.15-nexus-v0.9.7/Dreminex_Suite_v1.22.15.zip",
+    "sha256": "b67adba2abcc2c96f4b583d8e3694e29f26b6e3ff5a8f6b111dd02ed20b9236e",
+    "release_notes_url": "https://github.com/anime68/codex-cloud-dreminex-admin-plugin-and-nexus-app-release/releases/tag/dreminex-suite-v1.22.15-nexus-v0.9.7"
   },
   "android": {
-    "version": "0.9.6",
-    "download_url": "https://github.com/anime68/codex-cloud-dreminex-admin-plugin-and-nexus-app-release/releases/download/dreminex-suite-v1.22.14-nexus-v0.9.6/Dreminex_Nexus_v0.9.6_signed.apk",
-    "sha256": "c8fd14072bceed0a6f94c3af7f32e81c8e12e49b286582b3ed0bbac40571fe2e"
+    "version": "0.9.7",
+    "download_url": "https://github.com/anime68/codex-cloud-dreminex-admin-plugin-and-nexus-app-release/releases/download/dreminex-suite-v1.22.15-nexus-v0.9.7/Dreminex_Nexus_v0.9.7_signed.apk",
+    "sha256": "170d9b6f4752f21f665a0c883d077ae5f969fbd913f6581dfdf20842f98d886e"
   },
   "windows": {
     "version": "",
     "download_url": "",
     "sha256": ""
   },
-  "release_notes_url": "https://github.com/anime68/codex-cloud-dreminex-admin-plugin-and-nexus-app-release/releases/tag/dreminex-suite-v1.22.14-nexus-v0.9.6"
+  "release_notes_url": "https://github.com/anime68/codex-cloud-dreminex-admin-plugin-and-nexus-app-release/releases/tag/dreminex-suite-v1.22.15-nexus-v0.9.7"
 }
